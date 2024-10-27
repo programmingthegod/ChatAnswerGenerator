@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answer Generator</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-4">Answer Generator</h1>
+        <form id="generate-form">
+            <div class="form-group">
+                <label for="question">Question:</label>
+                <textarea class="form-control" id="question" name="question" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="context">Context:</label>
+                <textarea class="form-control" id="context" name="context" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Generate Answer</button>
+        </form>
+        <div id="output" class="mt-4"></div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#generate-form').on('submit', function(e) {
+                e.preventDefault();
+                $('#output').html('<p>Generating...</p>');
+                $.ajax({
+                    url: '/generate',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        $('#output').html('<pre>' + response.answer + '</pre>');
+                    },
+                    error: function(error) {
+                        $('#output').html('<p>There was an error generating the answer.</p>');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
